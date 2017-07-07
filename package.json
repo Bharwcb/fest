@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/Bharwcb/fest/issues"
   },
-  "homepage": "https://github.com/Bharwcb/fest#readme"
+  "homepage": "https://github.com/Bharwcb/fest#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "querystring": "^0.2.0",
+    "request": "^2.81.0"
+  }
 }
