@@ -172,17 +172,81 @@
 				};
 				// ~~~ end of artists following call
 
+				// ~~~ saved artists call
+				let offset = 0;
+				let savedArtists = [];
+				url = 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset;
 
+				savedArtistsCallAsync(url) {
+					return $.ajax({
+						url: url,
+						headers: {
+							'Authorization': 'Bearer ' + access_token
+						}
+					})
+					.done((res) => {
+						buildSavedArtists(res);
 
+						let savedArtistsPromises = [];
 
+						while (offset < res.total) {
+							promise = $.ajax({
+								url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
+								headers: {
+									'Authorization': 'Bearer ' + access_token
+								}
+							})
+							.done((additional_api_response) => {
+								buildSavedArtists(additional_api_response)
+							});
+							savedArtistsPromises.push(promise);
+							offset += 50;
+						};
 
+						// run all promises
+						$.when.apply($, savedArtistsPromises)
+						// only when they are successful
+						.then(() => {
+							savedArtists = _.uniq(savedArtists);
+							savedArtistsPlaceholder.innerHTML = savedArtistsTemplate(savedArtists);
+							console.log('savedArtists is an array of unique artist names in your library: ', savedArtists.length);
+						});
+					})
+					.fail((err) => {
+						console.log('error in saved artists api call');
+					});
+				};
 
+				function buildSavedArtists(res) {
+					res.items.forEach((track) => {
+						track.track.artists.forEach((artist) => {
+							savedArtists.push(artist.name);
+						})
+					});
+				};
+				// ~~~ end of saved artists call	
 
-				
-
+			} else {
+				$('#login').show();
+				$('#loggedin').hide();
 			}
-		}
-  	
+
+			document.getElementById('obtain-new-token').addEventListener('click', () => {
+				$.ajax({
+					url: '/refresh_token',
+					data: {
+						'refresh_token': refresh_token
+					}
+				}).done((data) => {
+					access_token = data.access_token;
+					oauthPlaceholder.innerHTML = oauthTemplate({
+						access_token: access_token,
+						refresh_token: refresh_token
+					});
+				});
+			}, false);
+
+		};
   </script>
 </body>
 </html>
