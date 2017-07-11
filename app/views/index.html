@@ -132,8 +132,8 @@
 					success: (res) => {
 						// send JSON response from API call into template
 						userProfilePlaceholder.innerHTML = userProfileTemplate(res);
-						$('#login').hide();
-						$('#loggedin').show();
+						$("#login").hide();
+						$("#loggedin").show();
 					}
 				});
 				// ~~~ end of user profile API call
@@ -177,7 +177,7 @@
 				let savedArtists = [];
 				url = 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset;
 
-				savedArtistsCallAsync(url) {
+				function savedArtistsCallAsync(url) {
 					return $.ajax({
 						url: url,
 						headers: {
@@ -227,8 +227,8 @@
 				// ~~~ end of saved artists call	
 
 			} else {
-				$('#login').show();
-				$('#loggedin').hide();
+				$("#login").show();
+				$("#loggedin").hide();
 			}
 
 			document.getElementById('obtain-new-token').addEventListener('click', () => {
