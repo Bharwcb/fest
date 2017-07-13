@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Auth set up</title>
-	<link rel="stylesheet" type="text/css" href="/netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<style type="text/css">
 		#login, #loggedin {
 			display: none;
@@ -45,7 +45,7 @@
 		</div>
 	</script>
 
-	<script id="artists-following-tempate" type="text/x-handlebars-template">
+	<script id="artists-following-template" type="text/x-handlebars-template">
 		<h2>Artists following</h2>
 		<!-- list each artist using Handlebars.  #each means will receive array -->
 		<ul>
@@ -65,7 +65,7 @@
 		</ul>
 	</script>
 
-	<script id="oauth-temlpate" type="text/x-handlebars-template">
+	<script id="oauth-template" type="text/x-handlebars-template">
 		<h2>Oauth info</h2>
 		<dl class="dl-horizontal">
 			<dt>Access token</dt><dd>{{access_token}}</dd>
@@ -93,7 +93,7 @@
   	userProfileTemplate = Handlebars.compile(userProfileSource),
   	userProfilePlaceholder = document.getElementById('user-profile');
 
-  	const artistsFollowingSource = document.getElementById("artists-following-template").innerHTML,
+  	const artistsFollowingSource = document.getElementById('artists-following-template').innerHTML,
 		artistsFollowingTemplate = Handlebars.compile(artistsFollowingSource),
 		artistsFollowingPlaceholder = document.getElementById("artists-following");
 
