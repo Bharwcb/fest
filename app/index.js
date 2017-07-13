@@ -67,18 +67,18 @@ app
 				grant_type: 'authorization_code'
 			},
 			headers: {
-				'Authorization': 'Basic ' + (new Buffer(process.env.CLIENT_ID + ':' + process.ENV.CLIENT_SECRET).toString('base64'))
+				'Authorization': 'Basic ' + (new Buffer(process.env.CLIENT_ID + ':' + process.env.CLIENT_SECRET).toString('base64'))
 			},
 			json: true
 		};
 
-		request.post(authOptions, (err, res, body) => {
+		request.post(authOptions, (error, response, body) => {
 			console.log('\nRequesting Access Token using Auth Code');
-
-			if (err) {
-				console.log('Error requesting access token using auth code: ', err);
-			} else if (!err && res.statusCode === 200) {
-				console.log('\nAccess Token granded');
+			if (error) {
+				return console.log('Error in requesting access token: ', error);
+			}
+			else if (!error && response.statusCode === 200) {
+				console.log("\nAccess Token granted");
 				let access_token = body.access_token;
 				const refresh_token = body.refresh_token;
 				const options = {
@@ -88,8 +88,8 @@ app
 				};
 
 				// use access token
-				request.get(options, (err, res, body) => {
-					// console.log('body: ', body);
+				request.get(options, function(err, response, body) {
+					// console.log("body: ", body);
 				});
 
 				// redirect to homepage

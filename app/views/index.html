@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Auth set up</title>
-	<link rel="stylesheet" type="text/css" href="/netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<style type="text/css">
 		#login, #loggedin {
 			display: none;
@@ -45,7 +45,7 @@
 		</div>
 	</script>
 
-	<script id="artists-following-tempate" type="text/x-handlebars-template">
+	<script id="artists-following-template" type="text/x-handlebars-template">
 		<h2>Artists following</h2>
 		<!-- list each artist using Handlebars.  #each means will receive array -->
 		<ul>
@@ -65,7 +65,7 @@
 		</ul>
 	</script>
 
-	<script id="oauth-temlpate" type="text/x-handlebars-template">
+	<script id="oauth-template" type="text/x-handlebars-template">
 		<h2>Oauth info</h2>
 		<dl class="dl-horizontal">
 			<dt>Access token</dt><dd>{{access_token}}</dd>
@@ -93,13 +93,13 @@
   	userProfileTemplate = Handlebars.compile(userProfileSource),
   	userProfilePlaceholder = document.getElementById('user-profile');
 
-  	const artistsFollowingSource = document.getElementById("artists-following-template").innerHTML,
+  	const artistsFollowingSource = document.getElementById('artists-following-template').innerHTML,
 		artistsFollowingTemplate = Handlebars.compile(artistsFollowingSource),
 		artistsFollowingPlaceholder = document.getElementById("artists-following");
 
-		const savedArtistsSource = document.getElementById("saved-artists-template").innerHTML,
+		const savedArtistsSource = document.getElementById('saved-artists-template').innerHTML,
 		savedArtistsTemplate = Handlebars.compile(savedArtistsSource),
-		savedArtistsPlaceholder = document.getElementById("saved-artists");
+		savedArtistsPlaceholder = document.getElementById('saved-artists');
 
 		const oauthSource = document.getElementById("oauth-template").innerHTML,
 		oauthTemplate = Handlebars.compile(oauthSource),
@@ -132,8 +132,8 @@
 					success: (res) => {
 						// send JSON response from API call into template
 						userProfilePlaceholder.innerHTML = userProfileTemplate(res);
-						$('#login').hide();
-						$('#loggedin').show();
+						$("#login").hide();
+						$("#loggedin").show();
 					}
 				});
 				// ~~~ end of user profile API call
@@ -172,17 +172,83 @@
 				};
 				// ~~~ end of artists following call
 
+				// ~~~ saved artists call
+				let offset = 0;
+				let savedArtists = [];
+				url = 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset;
 
-
-
-
-
-
+				savedArtistsCallAsync(url);
 				
+				function savedArtistsCallAsync(url) {
+					return $.ajax({
+						url: url,
+						headers: {
+							'Authorization': 'Bearer ' + access_token
+						}
+					})
+					.done((res) => {
+						buildSavedArtists(res);
 
+						let savedArtistsPromises = [];
+
+						while (offset < res.total) {
+							promise = $.ajax({
+								url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
+								headers: {
+									'Authorization': 'Bearer ' + access_token
+								}
+							})
+							.done((additional_api_response) => {
+								buildSavedArtists(additional_api_response)
+							});
+							savedArtistsPromises.push(promise);
+							offset += 50;
+						};
+
+						// run all promises
+						$.when.apply($, savedArtistsPromises)
+						// only when they are successful
+						.then(() => {
+							savedArtists = _.uniq(savedArtists);
+							savedArtistsPlaceholder.innerHTML = savedArtistsTemplate(savedArtists);
+							console.log('savedArtists is an array of unique artist names in your library: ', savedArtists.length);
+						});
+					})
+					.fail((err) => {
+						console.log('error in saved artists api call');
+					});
+				};
+
+				function buildSavedArtists(res) {
+					res.items.forEach((track) => {
+						track.track.artists.forEach((artist) => {
+							savedArtists.push(artist.name);
+						})
+					});
+				};
+				// ~~~ end of saved artists call	
+
+			} else {
+				$("#login").show();
+				$("#loggedin").hide();
 			}
-		}
-  	
+
+			document.getElementById('obtain-new-token').addEventListener('click', () => {
+				$.ajax({
+					url: '/refresh_token',
+					data: {
+						'refresh_token': refresh_token
+					}
+				}).done((data) => {
+					access_token = data.access_token;
+					oauthPlaceholder.innerHTML = oauthTemplate({
+						access_token: access_token,
+						refresh_token: refresh_token
+					});
+				});
+			}, false);
+
+		};
   </script>
 </body>
 </html>
