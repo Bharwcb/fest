@@ -97,9 +97,9 @@
 		artistsFollowingTemplate = Handlebars.compile(artistsFollowingSource),
 		artistsFollowingPlaceholder = document.getElementById("artists-following");
 
-		const savedArtistsSource = document.getElementById("saved-artists-template").innerHTML,
+		const savedArtistsSource = document.getElementById('saved-artists-template').innerHTML,
 		savedArtistsTemplate = Handlebars.compile(savedArtistsSource),
-		savedArtistsPlaceholder = document.getElementById("saved-artists");
+		savedArtistsPlaceholder = document.getElementById('saved-artists');
 
 		const oauthSource = document.getElementById("oauth-template").innerHTML,
 		oauthTemplate = Handlebars.compile(oauthSource),
@@ -177,6 +177,8 @@
 				let savedArtists = [];
 				url = 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset;
 
+				savedArtistsCallAsync(url);
+				
 				function savedArtistsCallAsync(url) {
 					return $.ajax({
 						url: url,
