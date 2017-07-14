@@ -138,7 +138,7 @@
 				});
 				// ~~~ end of user profile API call
 
-				// ~~~ artists following sync API call
+				// ~~~ artists following API call
 				let artistsFollowing = [];
 				let url = 'https://api.spotify.com/v1/me/following?type=artist&limit=3';
 				artistsFollowingCallSync(url);
@@ -172,35 +172,35 @@
 				};
 				// ~~~ end of artists following call
 
-				// ~~~ saved artists async API call
+				// ~~~ saved artists call
 				let offset = 0;
 				let savedArtists = [];
-				let savedArtistsPromises = [];
 				url = 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset;
+
+				savedArtistsCallAsync(url);
 				
-				function savedArtistsApiCall() { 
+				function savedArtistsCallAsync(url) {
 					return $.ajax({
 						url: url,
 						headers: {
 							'Authorization': 'Bearer ' + access_token
 						}
-					}).done((res) => {
-						buildSavedArtists(res);
-					});
-				};
-
-				savedArtistsCallAsync(url);
-				
-				function savedArtistsCallAsync(url) {
-					savedArtistsApiCall()
+					})
 					.done((res) => {
-						console.log('res: ', res);
-						// buildSavedArtists(res);
+						buildSavedArtists(res);
+
+						let savedArtistsPromises = [];
 
 						while (offset < res.total) {
-							console.log('offset: ', offset);
-							console.log('savedArtists.length: ', savedArtists.length);
-							promise = savedArtistsApiCall();
+							promise = $.ajax({
+								url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
+								headers: {
+									'Authorization': 'Bearer ' + access_token
+								}
+							})
+							.done((additional_api_response) => {
+								buildSavedArtists(additional_api_response)
+							});
 							savedArtistsPromises.push(promise);
 							offset += 50;
 						};
