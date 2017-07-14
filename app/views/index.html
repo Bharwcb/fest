@@ -177,7 +177,9 @@
 				let savedArtists = [];
 				let savedArtistsPromises = [];
 				url = 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset;
-				let savedArtistsApiCall = $.ajax({
+				
+				function savedArtistsApiCall() { 
+					return $.ajax({
 						url: url,
 						headers: {
 							'Authorization': 'Bearer ' + access_token
@@ -185,10 +187,12 @@
 					}).done((res) => {
 						buildSavedArtists(res);
 					});
+				};
+
 				savedArtistsCallAsync(url);
 				
 				function savedArtistsCallAsync(url) {
-					return savedArtistsApiCall
+					savedArtistsApiCall()
 					.done((res) => {
 						console.log('res: ', res);
 						// buildSavedArtists(res);
@@ -196,7 +200,7 @@
 						while (offset < res.total) {
 							console.log('offset: ', offset);
 							console.log('savedArtists.length: ', savedArtists.length);
-							promise = savedArtistsApiCall;
+							promise = savedArtistsApiCall();
 							savedArtistsPromises.push(promise);
 							offset += 50;
 						};
