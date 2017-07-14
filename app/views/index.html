@@ -138,7 +138,7 @@
 				});
 				// ~~~ end of user profile API call
 
-				// ~~~ artists following API call
+				// ~~~ artists following sync API call
 				let artistsFollowing = [];
 				let url = 'https://api.spotify.com/v1/me/following?type=artist&limit=3';
 				artistsFollowingCallSync(url);
@@ -172,7 +172,7 @@
 				};
 				// ~~~ end of artists following call
 
-				// ~~~ saved artists call
+				// ~~~ saved artists async API call
 				let offset = 0;
 				let savedArtists = [];
 				url = 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset;
