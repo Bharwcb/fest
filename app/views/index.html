@@ -176,7 +176,6 @@
 				let offset = 0;
 				let savedArtists = [];
 				url = 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset;
-
 				savedArtistsCallAsync(url);
 				
 				function savedArtistsCallAsync(url) {
@@ -193,7 +192,7 @@
 
 						while (offset < res.total) {
 							promise = $.ajax({
-								url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
+								url: url + offset,
 								headers: {
 									'Authorization': 'Bearer ' + access_token
 								}
