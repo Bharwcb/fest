@@ -37,6 +37,7 @@ app
 		response_type: 'code',
 		client_id: process.env.CLIENT_ID,
 		scope: scope,
+		// URL to send user back to after logged in
 		redirect_uri: redirectUri,
 		state: state,
 		// require login every time for testing purposes
@@ -46,8 +47,8 @@ app
 	res.redirect('https://accounts.spotify.com/authorize?' + request_auth_code_query);
 })
 
-// redirect URI is /callback?authorization_code=...
-// request an access token after checking state parameter 
+// Redirect URI is /callback?authorization_code=...
+// Once user is signed in, check state parameter (need to know got there from our app's spotify login), then request access token 
 .get('/callback', (req, res) => {
 	const code = req.query.code || null;
 	const state = req.query.state || null;
