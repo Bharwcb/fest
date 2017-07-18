@@ -98,7 +98,6 @@ app
 				return artistsFollowingCallSync(cursors);
 			};
 		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
-		  console.log('\nArtists Array: ', artistsFollowing);
 	  }, (err) => {
 	    console.log('Error in artists following call: ', err);
 	  });
