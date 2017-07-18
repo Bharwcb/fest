@@ -5,6 +5,7 @@ const querystring = require('querystring');
 const app = express();
 const Spotify = require('spotify-web-api-node');
 const cookieParser = require('cookie-parser');
+var object = require('lodash/fp/object');
 
 const stateKey = 'spotify_auth_state';
 const scopes = ['user-read-private', 'user-read-email', 'user-follow-read', 'user-library-read', 'user-top-read'];
@@ -38,12 +39,12 @@ app
 .use(express.static(__dirname + '/views'))
 .use(cookieParser())
 
-// clicks login button - build query string direct to accounts.spotify/authorize?client_id=...
+// clicks login button - build query string direct to accounts.spotify/authorize?client_id=..response_type=code..redirect_uri..scope..state
 .get('/login', (req, res) => {
 	const state = generateRandomString(16);
 	res.cookie(stateKey, state);
 	const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
-	console.log('\nRequesting Authorization Code from Spotify. Redirecting to: ', authorizeURL);
+	console.log('\nRequesting Authorization Code from Spotify.');
 	res.redirect(authorizeURL);
 })
 
@@ -66,6 +67,7 @@ app
 
 		spotifyApi.authorizationCodeGrant(code)
 		.then((data) => {
+			console.log('\nAccess token granted');
 			const { expires_in, access_token, refresh_token } = data.body;
 			spotifyApi.setAccessToken(data.body['access_token']);
 	    spotifyApi.setRefreshToken(data.body['refresh_token']);
@@ -77,6 +79,44 @@ app
 			console.log('Err: ', err);
 		});
 	}
+})
+
+.get('/artists-following', (req, res) => {
+	let artistsFollowing = [];
+	artistsFollowingCallSync();
+	/* 
+	* if first call, no after value.
+	* each response's 'cursor' value is {after: last_artist_id}
+	* spotifyApi.getFollowedArtists({ limit : 3, cursor })
+	* would default value of after: 0 work?  Would that make the first api call?
+	*/
+	function artistsFollowingCallSync(cursors=null) {
+
+		spotifyApi.getFollowedArtists( object.merge({ limit : 3 }, cursors) )
+	  .then((data) => {
+	    console.log('\nURL requested: ', data.body.artists.href);
+	    console.log('\nFollowing ', data.body.artists.total, ' artists.');
+	    buildArtistsFollowing(data);
+
+	    let cursors = data.body.artists.cursors || null;
+	    console.log('\nCursors: ', cursors);
+	    
+			if (data.body.artists.next) {
+				return artistsFollowingCallSync(cursors);
+			} else {
+		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
+			};
+	  }, (err) => {
+	    console.log('Error in artists following call: ', err);
+	  });
+  }
+
+	function buildArtistsFollowing(data) {
+		data.body.artists.items.forEach((artist) => {
+			artistsFollowing.push(artist.name);
+			console.log('\nAdded ', artist.name);
+		});
+	};
 })
 
 .listen(8888, (err) => {
