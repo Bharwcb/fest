@@ -85,36 +85,26 @@ app
 	let artistsFollowing = [];
 	artistsFollowingCallSync();
 	/* 
-	* if first call, no after value.
-	* each response's 'cursor' value is {after: last_artist_id}
-	* spotifyApi.getFollowedArtists({ limit : 3, cursor })
-	* would default value of after: 0 work?  Would that make the first api call?
+	* first call - no 'after' option
+	* response's 'cursor' value is {after: last_artist_id}
+	* spotifyApi.getFollowedArtists({ limit : 3, cursor }) = spotifyApi.getFollowedArtists({ limit : 3, after: 'asdgsadg' })
 	*/
 	function artistsFollowingCallSync(cursors=null) {
-
 		spotifyApi.getFollowedArtists( object.merge({ limit : 3 }, cursors) )
 	  .then((data) => {
-	    console.log('\nURL requested: ', data.body.artists.href);
-	    console.log('\nFollowing ', data.body.artists.total, ' artists.');
 	    buildArtistsFollowing(data);
-
-	    let cursors = data.body.artists.cursors || null;
-	    console.log('\nCursors: ', cursors);
-	    
+	    let cursors = data.body.artists.cursors;
 			if (data.body.artists.next) {
 				return artistsFollowingCallSync(cursors);
-			} else {
-		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
 			};
+		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
 	  }, (err) => {
 	    console.log('Error in artists following call: ', err);
 	  });
   }
-
 	function buildArtistsFollowing(data) {
 		data.body.artists.items.forEach((artist) => {
 			artistsFollowing.push(artist.name);
-			console.log('\nAdded ', artist.name);
 		});
 	};
 })
