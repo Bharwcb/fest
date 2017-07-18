@@ -5,6 +5,7 @@ const querystring = require('querystring');
 const app = express();
 const Spotify = require('spotify-web-api-node');
 const cookieParser = require('cookie-parser');
+var object = require('lodash/fp/object');
 
 const stateKey = 'spotify_auth_state';
 const scopes = ['user-read-private', 'user-read-email', 'user-follow-read', 'user-library-read', 'user-top-read'];
@@ -81,51 +82,39 @@ app
 })
 
 .get('/artists-following', (req, res) => {
-	// ~~~ artists following sync API call
 	let artistsFollowing = [];
-
 	artistsFollowingCallSync();
+	/* 
+	* if first call, no after value.
+	* each response's 'cursor' value is {after: last_artist_id}
+	* spotifyApi.getFollowedArtists({ limit : 3, cursor })
+	* would default value of after: 0 work?  Would that make the first api call?
+	*/
+	function artistsFollowingCallSync(cursors=null) {
 
-	function artistsFollowingCallSync() {
-
-		/* 
-			- if first call, no after value.
-			- each response's 'cursor' value is {after: last_artist_id}
-			- spotifyApi.getFollowedArtists({ limit : 3, cursor })
-			- would default value of after: 0 work?  Would that make the first api call?
-		*/
-
-		spotifyApi.getFollowedArtists({ limit : 3 })
+		spotifyApi.getFollowedArtists( object.merge({ limit : 3 }, cursors) )
 	  .then((data) => {
-	  	console.log('Looking to see what original call after is: ', data);
+	    console.log('\nURL requested: ', data.body.artists.href);
 	    console.log('\nFollowing ', data.body.artists.total, ' artists.');
-
 	    buildArtistsFollowing(data);
 
-	    console.log('data.body.artists: ', data.body.artists);
+	    let cursors = data.body.artists.cursors || null;
+	    console.log('\nCursors: ', cursors);
 	    
-	    // ~~~ NEED TO SEND DATA.BODY.ARTISTS.CURSORS AS PARAM FOR NEXT artistsFollowingCallSync(CURSOR) & getFollowedArtists({ LIMIT: 3, CURSOR })
-				// if next not null, make api call again with 'next' url
-				// if (data.body.artists.next) {
-				// 	return artistsFollowingCallSync(cursors);
-				// };
-			// ~~~
-
-
-
+			if (data.body.artists.next) {
+				return artistsFollowingCallSync(cursors);
+			} else {
 		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
+			};
 	  }, (err) => {
 	    console.log('Error in artists following call: ', err);
 	  });
   }
-	// ~~~ end of artists following call
 
 	function buildArtistsFollowing(data) {
-		console.log('Adding: ', data.body.artists.items[0].name);
-		console.log('Adding: ', data.body.artists.items[1].name);
-		console.log('Adding: ', data.body.artists.items[2].name);
 		data.body.artists.items.forEach((artist) => {
 			artistsFollowing.push(artist.name);
+			console.log('\nAdded ', artist.name);
 		});
 	};
 })
