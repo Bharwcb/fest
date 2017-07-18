@@ -15,7 +15,7 @@ const spotifyApi = new Spotify({
 	redirectUri: 'http://localhost:8888/callback/'
 });
 
-const generateRandomString = (length) => {
+function generateRandomString(length) {
 	let text = '';
 	let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	for (var i = 0; i < length; i++) {
@@ -24,10 +24,21 @@ const generateRandomString = (length) => {
 	return text;
 }
 
+function refreshToken() {
+	spotifyApi.refreshAccessToken()
+  .then((data) => {
+    console.log('Refreshed access token');
+    spotifyApi.setAccessToken(data.body['access_token']);
+  }, (err) => {
+    console.log('Could not refresh access token', err);
+  });
+}
+
 app
 .use(express.static(__dirname + '/views'))
 .use(cookieParser())
 
+// clicks login button - build query string direct to accounts.spotify/authorize?client_id=...
 .get('/login', (req, res) => {
 	const state = generateRandomString(16);
 	res.cookie(stateKey, state);
@@ -37,13 +48,13 @@ app
 })
 
 /*
-- Verify that the state we put in the cookie matches the state in the query param, then request access token
-- Redirect URI looks like /callback?authorization_code=...
+- Verify that state we put in the cookie matches the state in the query param
+- Redirect URI from spotify looks like /callback?authorization_code=...
+- Use auth code to request access token
 */
 .get('/callback', (req, res) => {
 	const { code, state } = req.query;
 	const storedState = req.cookies ? req.cookies[stateKey] : null;
-
 	if (state === null || state !== storedState) {
 		res.redirect('/#' + querystring.stringify({
 			error: 'state_mismatch'
@@ -52,20 +63,12 @@ app
 		res.clearCookie(stateKey);
 		// request access token using auth code ('code')
 		console.log('\nRequesting Access Token using Auth Code');
+
 		spotifyApi.authorizationCodeGrant(code)
 		.then((data) => {
-
 			const { expires_in, access_token, refresh_token } = data.body;
-
-			console.log('\ntoken: ', access_token);
-			console.log('\ntype of: ', typeof access_token);
 			spotifyApi.setAccessToken(data.body['access_token']);
-			console.log('\ntest: ', spotifyApi.access_token);
-			console.log('\ntest: ', spotifyApi['access_token']);
-			console.log('\ntest: ', spotifyApi[access_token]);
-
-			// ~~~~~ TEST AN API CALL HERE? ~~~~~
-
+	    spotifyApi.setRefreshToken(data.body['refresh_token']);
 			res.redirect('/#' + querystring.stringify({
 				access_token: access_token,
 				refresh_token: refresh_token
@@ -73,7 +76,6 @@ app
 		}).catch((err) => {
 			console.log('Err: ', err);
 		});
-
 	}
 })
 
