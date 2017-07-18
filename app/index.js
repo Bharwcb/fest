@@ -110,25 +110,37 @@ app
 })
 
 .get('/saved-artists', (req, res) => {
+	let savedArtists = [];
+	let savedArtistsPromises = [];
+	savedArtistsCallAsync();
 
+	function savedArtistsCallAsync(offset=null) {
 
-	
-	// ~~~ saved artists async API call
-	// let offset = 0;
-	// let savedArtists = [];
-	// let savedArtistsPromises = [];
+		// offset must be in the form { offset: 50 }
+		spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, offset) )
+		.then((data) => {
+			buildSavedArtists(data);
+		  // console.log('\ntrack: ', data.body.items.track);
+		  console.log('\nSaved Artists Array Length: ', savedArtists.length);
+		}, (err) => {
+		  console.log('Error in saved artists call: ', err);
+		});
 
-	// savedArtistsCallAsync(url);
-	
-	// function savedArtistsCallAsync(url) {
-	// 	return $.ajax({
-	// 		url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
-	// 		headers: {
-	// 			'Authorization': 'Bearer ' + access_token
-	// 		}
-	// 	})
+	};
+
+	function buildSavedArtists(data) {
+		data.body.items.forEach((track) => {
+			track.track.artists.forEach((artist) => {
+				savedArtists.push(artist.name);
+			})
+		});
+	};
+
 	// 	.done((res) => {
 	// 		buildSavedArtists(res);
+
+
+	
 	// 		while (offset < res.total) {
 	// 			promise = $.ajax({
 	// 				url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
@@ -157,14 +169,8 @@ app
 	// 	});
 	// };
 
-	// function buildSavedArtists(res) {
-	// 	res.items.forEach((track) => {
-	// 		track.track.artists.forEach((artist) => {
-	// 			savedArtists.push(artist.name);
-	// 		})
-	// 	});
-	// };
-	// ~~~ end of saved artists call	
+
+
 })
 
 .listen(8888, (err) => {
