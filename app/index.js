@@ -88,16 +88,17 @@ app
   .then((data) => {
     console.log('\nFollowing ', data.body.artists.total, ' artists.');
 	  console.log('\n(Before build) Artists Following Array Length: ', artistsFollowing.length);
-
     buildArtistsFollowing(data);
 
   	function buildArtistsFollowing(data) {
-  		// console.log('First artist: ', data.body.artists.items[0].name);
-  		// console.log('Second artist: ', data.body.artists.items[1].name);
+  		// console.log('Adding: ', data.body.artists.items[0].name);
+  		// console.log('Adding: ', data.body.artists.items[1].name);
+  		// console.log('Adding: ', data.body.artists.items[2].name);
 			data.body.artists.items.forEach((artist) => {
 				artistsFollowing.push(artist.name);
 			});
 		};
+		
 	  console.log('\n(After build) Artists Following Array Length: ', artistsFollowing.length);
   }, (err) => {
     console.log('Error in artists following call: ', err);
