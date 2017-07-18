@@ -84,36 +84,27 @@ app
 	// ~~~ artists following sync API call
 	let artistsFollowing = [];
 
-	spotifyApi.getFollowedArtists({ limit : 1 })
+	spotifyApi.getFollowedArtists({ limit : 3 })
   .then((data) => {
     // 'This user is following 1051 artists!'
-    console.log('Following ', data.body.artists.total, ' artists.');
+    console.log('\nFollowing ', data.body.artists.total, ' artists.');
+	  console.log('\n(Before build) Artists Following Array Length: ', artistsFollowing.length);
 
+    buildArtistsFollowing(data);
 
+  	function buildArtistsFollowing(data) {
+  		console.log('Data.body: ', data.body);
+  		console.log('First artist: ', data.body.artists.items[0].name);
+  		console.log('Second artist: ', data.body.artists.items[1].name);
+  	// 	console.log('Data.artists[0].items: ', data.artists[0].items);
+			// data.body.artists.items.forEach((artist) => {
+			// 	artistsFollowing.push(artist.name);
+			// });
+		};
+	  console.log('\n(After build) Artists Following Array Length: ', artistsFollowing.length);
   }, (err) => {
     console.log('Error in artists following call: ', err);
   });
-
-	// 	.then((res) => {
-	// 		buildArtistsFollowing(res);
-	// 		// if next not null, make api call again with 'next' url
-	// 		if (res.artists.next) {
-	// 			return artistsFollowingCallSync(res.artists.next);
-	// 		};
-	// 		// send artistsFollowing array of artist names into template
-	// 		artistsFollowingPlaceholder.innerHTML = artistsFollowingTemplate(artistsFollowing);
-	// 		console.log('artistsFollowing is an array of all artists a user follows: ', artistsFollowing.length);
-	// 	})
-	// 	.fail((err) => {
-	// 		console.log('Error in artists following API call');
-	// 	});
-	// };
-
-	// function buildArtistsFollowing(res) {
-	// 	res.artists.items.forEach((artist) => {
-	// 		artistsFollowing.push(artist.name);
-	// 	});
-	// };
 	// ~~~ end of artists following call
 })
 
