@@ -21,6 +21,7 @@
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "querystring": "^0.2.0",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "spotify-web-api-node": "^2.4.0"
   }
 }
