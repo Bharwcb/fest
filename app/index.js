@@ -92,6 +92,7 @@ app
 			- if first call, no after value.
 			- each response's 'cursor' value is {after: last_artist_id}
 			- spotifyApi.getFollowedArtists({ limit : 3, cursor })
+			- would default value of after: 0 work?  Would that make the first api call?
 		*/
 
 		spotifyApi.getFollowedArtists({ limit : 3 })
@@ -120,9 +121,9 @@ app
 	// ~~~ end of artists following call
 
 	function buildArtistsFollowing(data) {
-		// console.log('Adding: ', data.body.artists.items[0].name);
-		// console.log('Adding: ', data.body.artists.items[1].name);
-		// console.log('Adding: ', data.body.artists.items[2].name);
+		console.log('Adding: ', data.body.artists.items[0].name);
+		console.log('Adding: ', data.body.artists.items[1].name);
+		console.log('Adding: ', data.body.artists.items[2].name);
 		data.body.artists.items.forEach((artist) => {
 			artistsFollowing.push(artist.name);
 		});
