@@ -38,12 +38,12 @@ app
 .use(express.static(__dirname + '/views'))
 .use(cookieParser())
 
-// clicks login button - build query string direct to accounts.spotify/authorize?client_id=...
+// clicks login button - build query string direct to accounts.spotify/authorize?client_id=..response_type=code..redirect_uri..scope..state
 .get('/login', (req, res) => {
 	const state = generateRandomString(16);
 	res.cookie(stateKey, state);
 	const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
-	console.log('\nRequesting Authorization Code from Spotify. Redirecting to: ', authorizeURL);
+	console.log('\nRequesting Authorization Code from Spotify.');
 	res.redirect(authorizeURL);
 })
 
@@ -66,6 +66,7 @@ app
 
 		spotifyApi.authorizationCodeGrant(code)
 		.then((data) => {
+			console.log('\nAccess token granted');
 			const { expires_in, access_token, refresh_token } = data.body;
 			spotifyApi.setAccessToken(data.body['access_token']);
 	    spotifyApi.setRefreshToken(data.body['refresh_token']);
@@ -80,38 +81,39 @@ app
 })
 
 .get('/artists-following', (req, res) => {
-		// ~~~ artists following sync API call
+	// ~~~ artists following sync API call
 	let artistsFollowing = [];
-	let url = 'https://api.spotify.com/v1/me/following?type=artist&limit=3';
-	artistsFollowingCallSync(url);
 
-	function artistsFollowingCallSync(url) {
-		return $.ajax({
-			url: url,
-			headers: {
-				'Authorization': 'Bearer ' + access_token
-			}
-		})
-		.then((res) => {
-			buildArtistsFollowing(res);
-			// if next not null, make api call again with 'next' url
-			if (res.artists.next) {
-				return artistsFollowingCallSync(res.artists.next);
-			};
-			// send artistsFollowing array of artist names into template
-			artistsFollowingPlaceholder.innerHTML = artistsFollowingTemplate(artistsFollowing);
-			console.log('artistsFollowing is an array of all artists a user follows: ', artistsFollowing.length);
-		})
-		.fail((err) => {
-			console.log('Error in artists following API call');
-		});
-	};
+	spotifyApi.getFollowedArtists({ limit : 1 })
+  .then((data) => {
+    // 'This user is following 1051 artists!'
+    console.log('Following ', data.body.artists.total, ' artists.');
 
-	function buildArtistsFollowing(res) {
-		res.artists.items.forEach((artist) => {
-			artistsFollowing.push(artist.name);
-		});
-	};
+
+  }, (err) => {
+    console.log('Error in artists following call: ', err);
+  });
+
+	// 	.then((res) => {
+	// 		buildArtistsFollowing(res);
+	// 		// if next not null, make api call again with 'next' url
+	// 		if (res.artists.next) {
+	// 			return artistsFollowingCallSync(res.artists.next);
+	// 		};
+	// 		// send artistsFollowing array of artist names into template
+	// 		artistsFollowingPlaceholder.innerHTML = artistsFollowingTemplate(artistsFollowing);
+	// 		console.log('artistsFollowing is an array of all artists a user follows: ', artistsFollowing.length);
+	// 	})
+	// 	.fail((err) => {
+	// 		console.log('Error in artists following API call');
+	// 	});
+	// };
+
+	// function buildArtistsFollowing(res) {
+	// 	res.artists.items.forEach((artist) => {
+	// 		artistsFollowing.push(artist.name);
+	// 	});
+	// };
 	// ~~~ end of artists following call
 })
 
