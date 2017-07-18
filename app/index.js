@@ -83,37 +83,50 @@ app
 .get('/artists-following', (req, res) => {
 	// ~~~ artists following sync API call
 	let artistsFollowing = [];
+
 	artistsFollowingCallSync();
 
 	function artistsFollowingCallSync() {
+
+		/* 
+			- if first call, no after value.
+			- each response's 'cursor' value is {after: last_artist_id}
+			- spotifyApi.getFollowedArtists({ limit : 3, cursor })
+		*/
+
 		spotifyApi.getFollowedArtists({ limit : 3 })
 	  .then((data) => {
+	  	console.log('Looking to see what original call after is: ', data);
 	    console.log('\nFollowing ', data.body.artists.total, ' artists.');
-
-		  console.log('\n(Before build) Artists Following Array Length: ', artistsFollowing.length);
 
 	    buildArtistsFollowing(data);
 
-			// if next not null, make api call again with 'next' url
-			// if (data.body.artists.next) {
-			// 	return artistsFollowingCallSync(res.artists.next);
-			// };
+	    console.log('data.body.artists: ', data.body.artists);
+	    
+	    // ~~~ NEED TO SEND DATA.BODY.ARTISTS.CURSORS AS PARAM FOR NEXT artistsFollowingCallSync(CURSOR) & getFollowedArtists({ LIMIT: 3, CURSOR })
+				// if next not null, make api call again with 'next' url
+				// if (data.body.artists.next) {
+				// 	return artistsFollowingCallSync(cursors);
+				// };
+			// ~~~
 
-	  	function buildArtistsFollowing(data) {
-	  		// console.log('Adding: ', data.body.artists.items[0].name);
-	  		// console.log('Adding: ', data.body.artists.items[1].name);
-	  		// console.log('Adding: ', data.body.artists.items[2].name);
-				data.body.artists.items.forEach((artist) => {
-					artistsFollowing.push(artist.name);
-				});
-			};
 
-		  console.log('\n(After build) Artists Following Array Length: ', artistsFollowing.length);
+
+		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
 	  }, (err) => {
 	    console.log('Error in artists following call: ', err);
 	  });
   }
 	// ~~~ end of artists following call
+
+	function buildArtistsFollowing(data) {
+		// console.log('Adding: ', data.body.artists.items[0].name);
+		// console.log('Adding: ', data.body.artists.items[1].name);
+		// console.log('Adding: ', data.body.artists.items[2].name);
+		data.body.artists.items.forEach((artist) => {
+			artistsFollowing.push(artist.name);
+		});
+	};
 })
 
 .listen(8888, (err) => {
