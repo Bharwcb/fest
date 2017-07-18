@@ -109,6 +109,64 @@ app
 	};
 })
 
+.get('/saved-artists', (req, res) => {
+
+
+	
+	// ~~~ saved artists async API call
+	// let offset = 0;
+	// let savedArtists = [];
+	// let savedArtistsPromises = [];
+
+	// savedArtistsCallAsync(url);
+	
+	// function savedArtistsCallAsync(url) {
+	// 	return $.ajax({
+	// 		url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
+	// 		headers: {
+	// 			'Authorization': 'Bearer ' + access_token
+	// 		}
+	// 	})
+	// 	.done((res) => {
+	// 		buildSavedArtists(res);
+	// 		while (offset < res.total) {
+	// 			promise = $.ajax({
+	// 				url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
+	// 				headers: {
+	// 					'Authorization': 'Bearer ' + access_token
+	// 				}
+	// 			})
+	// 			.done((res) => {
+	// 				buildSavedArtists(res)
+	// 			});
+	// 			savedArtistsPromises.push(promise);
+	// 			offset += 50;
+	// 		};
+
+	// 		// run all promises
+	// 		$.when.apply($, savedArtistsPromises)
+	// 		// only when they are successful
+	// 		.then(() => {
+	// 			savedArtists = _.uniq(savedArtists);
+	// 			savedArtistsPlaceholder.innerHTML = savedArtistsTemplate(savedArtists);
+	// 			console.log('savedArtists is an array of unique artist names in your library: ', savedArtists.length);
+	// 		});
+	// 	})
+	// 	.fail((err) => {
+	// 		console.log('error in saved artists api call');
+	// 	});
+	// };
+
+	// function buildSavedArtists(res) {
+	// 	res.items.forEach((track) => {
+	// 		track.track.artists.forEach((artist) => {
+	// 			savedArtists.push(artist.name);
+	// 		})
+	// 	});
+	// };
+	// ~~~ end of saved artists call	
+})
+
 .listen(8888, (err) => {
 	if (err) {
 		return console.log('\nError connecting to server: ', err);
