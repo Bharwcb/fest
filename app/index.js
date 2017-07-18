@@ -86,20 +86,17 @@ app
 
 	spotifyApi.getFollowedArtists({ limit : 3 })
   .then((data) => {
-    // 'This user is following 1051 artists!'
     console.log('\nFollowing ', data.body.artists.total, ' artists.');
 	  console.log('\n(Before build) Artists Following Array Length: ', artistsFollowing.length);
 
     buildArtistsFollowing(data);
 
   	function buildArtistsFollowing(data) {
-  		console.log('Data.body: ', data.body);
-  		console.log('First artist: ', data.body.artists.items[0].name);
-  		console.log('Second artist: ', data.body.artists.items[1].name);
-  	// 	console.log('Data.artists[0].items: ', data.artists[0].items);
-			// data.body.artists.items.forEach((artist) => {
-			// 	artistsFollowing.push(artist.name);
-			// });
+  		// console.log('First artist: ', data.body.artists.items[0].name);
+  		// console.log('Second artist: ', data.body.artists.items[1].name);
+			data.body.artists.items.forEach((artist) => {
+				artistsFollowing.push(artist.name);
+			});
 		};
 	  console.log('\n(After build) Artists Following Array Length: ', artistsFollowing.length);
   }, (err) => {
