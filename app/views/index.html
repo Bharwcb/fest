@@ -15,13 +15,15 @@
 		<div id="login">
 			<a href="/login" class="btn btn-primary">Login to Spotify</a>
 		</div>
+		<div id="artists-following-button">
+			<a href="/artists-following" class="btn btn-primary">View artists following</a>
+		</div>
 		<div id="loggedin">
 			<!-- placeholders -->
 			<div id="user-profile"></div>
 			<div id="artists-following"></div>
 			<div id="saved-artists"></div>
 			<div id="oauth"></div>
-			<button class="btn btn-default" id=obtain-new-token>Request new access token with refresh token</button>
 		</div>
 	</div>
 
@@ -229,21 +231,6 @@
 				$("#login").show();
 				$("#loggedin").hide();
 			}
-
-			document.getElementById('obtain-new-token').addEventListener('click', () => {
-				$.ajax({
-					url: '/refresh_token',
-					data: {
-						'refresh_token': refresh_token
-					}
-				}).done((data) => {
-					access_token = data.access_token;
-					oauthPlaceholder.innerHTML = oauthTemplate({
-						access_token: access_token,
-						refresh_token: refresh_token
-					});
-				});
-			}, false);
 
 		};
   </script>

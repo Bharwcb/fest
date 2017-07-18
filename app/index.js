@@ -79,6 +79,42 @@ app
 	}
 })
 
+.get('/artists-following', (req, res) => {
+		// ~~~ artists following sync API call
+	let artistsFollowing = [];
+	let url = 'https://api.spotify.com/v1/me/following?type=artist&limit=3';
+	artistsFollowingCallSync(url);
+
+	function artistsFollowingCallSync(url) {
+		return $.ajax({
+			url: url,
+			headers: {
+				'Authorization': 'Bearer ' + access_token
+			}
+		})
+		.then((res) => {
+			buildArtistsFollowing(res);
+			// if next not null, make api call again with 'next' url
+			if (res.artists.next) {
+				return artistsFollowingCallSync(res.artists.next);
+			};
+			// send artistsFollowing array of artist names into template
+			artistsFollowingPlaceholder.innerHTML = artistsFollowingTemplate(artistsFollowing);
+			console.log('artistsFollowing is an array of all artists a user follows: ', artistsFollowing.length);
+		})
+		.fail((err) => {
+			console.log('Error in artists following API call');
+		});
+	};
+
+	function buildArtistsFollowing(res) {
+		res.artists.items.forEach((artist) => {
+			artistsFollowing.push(artist.name);
+		});
+	};
+	// ~~~ end of artists following call
+})
+
 .listen(8888, (err) => {
 	if (err) {
 		return console.log('\nError connecting to server: ', err);
