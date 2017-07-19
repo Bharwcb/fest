@@ -116,11 +116,38 @@ app
 
 	function savedArtistsCallAsync(offset=null) {
 
-		// offset must be in the form { offset: 50 }
-		spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, offset) )
+		return spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, { offset: offset }) )
 		.then((data) => {
+
+		  console.log('\ntrack: ', data.body.items.track);
+
 			buildSavedArtists(data);
-		  // console.log('\ntrack: ', data.body.items.track);
+
+		  while (data.body.offset < data.body.total) {
+		  	promise = spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, offset) )
+		  	.then((data) => {
+		  		buildSavedArtists(data)
+		  	}, (err) => {
+		  		console.log('Error in additional saved artists calls: ', err);
+		  	})
+		  	savedArtistsPromises.push(promise);
+				offset += 50;
+		  };
+
+		  // run all promises - redo this for node
+
+			// $.when.apply($, savedArtistsPromises)
+			// // only when they are successful
+			// .then(() => {
+			// 	savedArtists = _.uniq(savedArtists);
+			// 	savedArtistsPlaceholder.innerHTML = savedArtistsTemplate(savedArtists);
+			// 	console.log('savedArtists is an array of unique artist names in your library: ', savedArtists.length);
+			// });
+
+
+
+
+
 		  console.log('\nSaved Artists Array Length: ', savedArtists.length);
 		}, (err) => {
 		  console.log('Error in saved artists call: ', err);
@@ -135,41 +162,6 @@ app
 			})
 		});
 	};
-
-	// 	.done((res) => {
-	// 		buildSavedArtists(res);
-
-
-	
-	// 		while (offset < res.total) {
-	// 			promise = $.ajax({
-	// 				url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
-	// 				headers: {
-	// 					'Authorization': 'Bearer ' + access_token
-	// 				}
-	// 			})
-	// 			.done((res) => {
-	// 				buildSavedArtists(res)
-	// 			});
-	// 			savedArtistsPromises.push(promise);
-	// 			offset += 50;
-	// 		};
-
-	// 		// run all promises
-	// 		$.when.apply($, savedArtistsPromises)
-	// 		// only when they are successful
-	// 		.then(() => {
-	// 			savedArtists = _.uniq(savedArtists);
-	// 			savedArtistsPlaceholder.innerHTML = savedArtistsTemplate(savedArtists);
-	// 			console.log('savedArtists is an array of unique artist names in your library: ', savedArtists.length);
-	// 		});
-	// 	})
-	// 	.fail((err) => {
-	// 		console.log('error in saved artists api call');
-	// 	});
-	// };
-
-
 
 })
 
