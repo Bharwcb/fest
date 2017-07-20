@@ -85,11 +85,13 @@ app
 .get('/artists-following', (req, res) => {
 	let artistsFollowing = [];
 	artistsFollowingCallSync();
+
 	/* 
 	* first call - no 'after' option
 	* response's 'cursor' value is {after: last_artist_id}
 	* spotifyApi.getFollowedArtists({ limit : 3, cursor }) = spotifyApi.getFollowedArtists({ limit : 3, after: 'asdgsadg' })
 	*/
+
 	function artistsFollowingCallSync(cursors=null) {
 		spotifyApi.getFollowedArtists( object.merge({ limit : 3 }, cursors) )
 	  .then((data) => {
@@ -103,6 +105,7 @@ app
 	    console.log('Error in artists following call: ', err);
 	  });
   }
+
 	function buildArtistsFollowing(data) {
 		data.body.artists.items.forEach((artist) => {
 			artistsFollowing.push(artist.name);
@@ -113,8 +116,9 @@ app
 .get('/saved-artists', (req, res) => {
 	let savedArtists = [];
 	let savedArtistsPromises = [];
-	savedArtistsCallAsync();
 	let offset = 0;
+
+	savedArtistsCallAsync();
 
 	function savedArtistsCallAsync(offset=0) {
 
@@ -138,6 +142,7 @@ app
 		  	savedArtists = array.uniq(savedArtists);
 			  console.log('\nSaved Artists Array Length: ', savedArtists.length);
 		  })
+		  
 		}, (err) => {
 		  console.log('Error in saved artists call: ', err);
 		});
