@@ -114,25 +114,25 @@ app
 	let savedArtistsPromises = [];
 	savedArtistsCallAsync();
 
-	function savedArtistsCallAsync(offset=null) {
+	function savedArtistsCallAsync(offset_value=0) {
 
-		return spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, { offset: offset }) )
+		return spotifyApi.getMySavedTracks( object.merge({ limit: 50 }, { offset: offset_value }) )
 		.then((data) => {
 
 		  console.log('\ntrack: ', data.body.items.track);
 
-			buildSavedArtists(data);
+			// buildSavedArtists(data);
 
-		  while (data.body.offset < data.body.total) {
-		  	promise = spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, offset) )
-		  	.then((data) => {
-		  		buildSavedArtists(data)
-		  	}, (err) => {
-		  		console.log('Error in additional saved artists calls: ', err);
-		  	})
-		  	savedArtistsPromises.push(promise);
-				offset += 50;
-		  };
+		  // while (data.body.offset < data.body.total) {
+		  // 	promise = spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, offset) )
+		  // 	.then((data) => {
+		  // 		buildSavedArtists(data)
+		  // 	}, (err) => {
+		  // 		console.log('Error in additional saved artists calls: ', err);
+		  // 	})
+		  // 	savedArtistsPromises.push(promise);
+				// offset += 50;
+		  // };
 
 		  // run all promises - redo this for node
 
