@@ -5,7 +5,8 @@ const querystring = require('querystring');
 const app = express();
 const Spotify = require('spotify-web-api-node');
 const cookieParser = require('cookie-parser');
-var object = require('lodash/fp/object');
+const object = require('lodash/fp/object');
+const array = require('lodash/array');
 
 const stateKey = 'spotify_auth_state';
 const scopes = ['user-read-private', 'user-read-email', 'user-follow-read', 'user-library-read', 'user-top-read'];
@@ -122,34 +123,21 @@ app
 			buildSavedArtists(data);
 
 		  while (offset < data.body.total) {
-		  	console.log('Offset: ', offset);
 		  	promise = spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, { offset: offset }) )
 		  	.then((data) => {
-		  	// 	buildSavedArtists(data)
-			  	console.log('href: ', data.body.href);
+		  		buildSavedArtists(data)
 		  	}, (err) => {
 		  		console.log('Error in additional saved artists calls: ', err);
 		  	})
-		  	// savedArtistsPromises.push(promise);
+		  	savedArtistsPromises.push(promise);
 				offset += 50;
 		  };
 
-		  console.log('Promises: ', savedArtistsPromises.length);
-		  // run all promises - redo this for node
-
-			// $.when.apply($, savedArtistsPromises)
-			// // only when they are successful
-			// .then(() => {
-			// 	savedArtists = _.uniq(savedArtists);
-			// 	savedArtistsPlaceholder.innerHTML = savedArtistsTemplate(savedArtists);
-			// 	console.log('savedArtists is an array of unique artist names in your library: ', savedArtists.length);
-			// });
-
-
-
-
-
-		  console.log('\nSaved Artists Array Length: ', savedArtists.length);
+		  return Promise.all(savedArtistsPromises)
+		  .then(() => {
+		  	savedArtists = array.uniq(savedArtists);
+			  console.log('\nSaved Artists Array Length: ', savedArtists.length);
+		  })
 		}, (err) => {
 		  console.log('Error in saved artists call: ', err);
 		});
