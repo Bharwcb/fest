@@ -5,7 +5,8 @@ const querystring = require('querystring');
 const app = express();
 const Spotify = require('spotify-web-api-node');
 const cookieParser = require('cookie-parser');
-var object = require('lodash/fp/object');
+const object = require('lodash/fp/object');
+const array = require('lodash/array');
 
 const stateKey = 'spotify_auth_state';
 const scopes = ['user-read-private', 'user-read-email', 'user-follow-read', 'user-library-read', 'user-top-read'];
@@ -84,11 +85,13 @@ app
 .get('/artists-following', (req, res) => {
 	let artistsFollowing = [];
 	artistsFollowingCallSync();
+
 	/* 
 	* first call - no 'after' option
 	* response's 'cursor' value is {after: last_artist_id}
 	* spotifyApi.getFollowedArtists({ limit : 3, cursor }) = spotifyApi.getFollowedArtists({ limit : 3, after: 'asdgsadg' })
 	*/
+
 	function artistsFollowingCallSync(cursors=null) {
 		spotifyApi.getFollowedArtists( object.merge({ limit : 3 }, cursors) )
 	  .then((data) => {
@@ -102,11 +105,58 @@ app
 	    console.log('Error in artists following call: ', err);
 	  });
   }
+
 	function buildArtistsFollowing(data) {
 		data.body.artists.items.forEach((artist) => {
 			artistsFollowing.push(artist.name);
 		});
 	};
+})
+
+.get('/saved-artists', (req, res) => {
+	let savedArtists = [];
+	let savedArtistsPromises = [];
+	let offset = 0;
+
+	savedArtistsCallAsync();
+
+	function savedArtistsCallAsync(offset=0) {
+
+		return spotifyApi.getMySavedTracks( object.merge({ limit: 50 }, { offset: offset }) )
+		.then((data) => {
+			buildSavedArtists(data);
+
+		  while (offset < data.body.total) {
+		  	promise = spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, { offset: offset }) )
+		  	.then((data) => {
+		  		buildSavedArtists(data)
+		  	}, (err) => {
+		  		console.log('Error in additional saved artists calls: ', err);
+		  	})
+		  	savedArtistsPromises.push(promise);
+				offset += 50;
+		  };
+
+		  return Promise.all(savedArtistsPromises)
+		  .then(() => {
+		  	savedArtists = array.uniq(savedArtists);
+			  console.log('\nSaved Artists Array Length: ', savedArtists.length);
+		  })
+		  
+		}, (err) => {
+		  console.log('Error in saved artists call: ', err);
+		});
+
+	};
+
+	function buildSavedArtists(data) {
+		data.body.items.forEach((track) => {
+			track.track.artists.forEach((artist) => {
+				savedArtists.push(artist.name);
+			})
+		});
+	};
+
 })
 
 .listen(8888, (err) => {
