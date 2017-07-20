@@ -123,14 +123,13 @@ app
 
 		  while (offset < data.body.total) {
 		  	console.log('Offset: ', offset);
-		  	promise = spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, { offset: offset }) );
-
-		  	// .then((data) => {
-		  	// 	console.log('Promise: ', promise);
+		  	promise = spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, { offset: offset }) )
+		  	.then((data) => {
 		  	// 	buildSavedArtists(data)
-		  	// }, (err) => {
-		  	// 	console.log('Error in additional saved artists calls: ', err);
-		  	// })
+			  	console.log('href: ', data.body.href);
+		  	}, (err) => {
+		  		console.log('Error in additional saved artists calls: ', err);
+		  	})
 		  	// savedArtistsPromises.push(promise);
 				offset += 50;
 		  };
