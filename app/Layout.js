@@ -1,6 +1,6 @@
 const React = require('react');
 
-class App extends React.Component {
+class Layout extends React.Component {
 	render() {
 		return (
 			<div>
@@ -10,4 +10,4 @@ class App extends React.Component {
 	}
 };
 
-module.exports = App;
+module.exports = Layout;
