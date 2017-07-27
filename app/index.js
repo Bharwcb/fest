@@ -1,6 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
-const Layout = require('./Layout');
+const Layout = require('./components/Layout');
 
 ReactDOM.render(
 	<Layout />,
