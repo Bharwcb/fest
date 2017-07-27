@@ -1,3 +1,4 @@
+console.log('get to login.js?');
 require('dotenv').config();
 const express = require('express');
 const request = require('request');

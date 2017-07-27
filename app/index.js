@@ -2,9 +2,9 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const App = require('./App');
 
-// require login.js
-
 ReactDOM.render(
 	<App />,
 	document.getElementById('app')
 );
+
+const login = require('./login/login.js');
