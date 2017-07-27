@@ -1,10 +1,10 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const App = require('./App');
-
-// require login.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Layout from './components/Layout';
 
 ReactDOM.render(
-	<App />,
+	<Layout />,
 	document.getElementById('app')
 );
+
+// const login = require('./login/login.js');
