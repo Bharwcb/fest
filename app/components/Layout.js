@@ -1,6 +1,6 @@
-const React = require('react');
+import React from 'react';
 
-class Layout extends React.Component {
+export default class Layout extends React.Component {
 	render() {
 		return (
 			<div className="app-container">
@@ -26,4 +26,3 @@ class Layout extends React.Component {
 	}
 };
 
-module.exports = Layout;

@@ -1,6 +1,6 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const Layout = require('./components/Layout');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Layout from './components/Layout';
 
 ReactDOM.render(
 	<Layout />,
