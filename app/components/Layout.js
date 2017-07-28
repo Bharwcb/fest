@@ -1,22 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Switch, Route } from 'react-router-dom';
+import Home from './Home';
+import Login from './Login';
+import ArtistsFollowing from './ArtistsFollowing';
+import SavedArtists from './SavedArtists';
 
-// need to use Link to route buttons to routes below:
+
 
 export default class Layout extends React.Component {
 	render() {
 		return (
 			<div className="app-container">
-				<header></header>
+				<header>
+					<h1>Home</h1>
+				</header>
 
-			{/* 
-				Eventually take buttons out and add back as components.. leaving only:
-				<div className="app-content">{this.props.children}</div> 
-			*/}
+				<main>
+			    <Switch>
+			    	{/* Put all the buttons below in a Home component */}
+			    	<Route exact path='/' component={Home}/>
+			      <Route path='/login' component={Login}/>
+			      <Route path='/artists-following' component={artistsFollowing}/>
+			      <Route path='/saved-artists' component={savedArtists}/>
+			    </Switch>
+			   </main>
 
-				<div id="login-button">
-					<a href="login" className="btn btn-primary">Login</a>
-				</div>
+
 				<div id="artists-following-button">
 					<a href="artists-following" className="btn btn-primary">View artists following</a>
 				</div>
