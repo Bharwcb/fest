@@ -1,4 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router';
+
+// need to use Link to route buttons to routes below:
 
 export default class Layout extends React.Component {
 	render() {
