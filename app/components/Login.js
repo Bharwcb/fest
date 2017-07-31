@@ -3,11 +3,10 @@ import React from 'react';
 export default class Login extends React.Component {
 	render() {
 		return (
-			<h3>Login</h3>
+			<h1>asgdasdg</h1>
 		);
 	}
 };
-
 
 console.log('get to Login component?');
 // require('dotenv').config();
