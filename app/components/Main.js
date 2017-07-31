@@ -8,15 +8,17 @@ import SavedArtists from './SavedArtists';
 
 export default class Main extends React.Component {
 	render() {
-		<main>
-	    <Switch>
-		  	{/* Put all the buttons below in a Home component */}
-		  	<Route exact path='/' component={Home}/>
-		    <Route path='/login' component={Login}/>
-		    <Route path='/artists-following' component={artistsFollowing}/>
-		    <Route path='/saved-artists' component={savedArtists}/>
-		  </Switch>
-	  </main>
+		return (
+			<main>
+		    <Switch>
+			  	{/* Putting all the buttons below in a Home component */}
+			  	<Route exact path='/' component={Home}/>
+			    <Route path='/login' component={Login}/>
+			    <Route path='/artists-following' component={ArtistsFollowing}/>
+			    <Route path='/saved-artists' component={SavedArtists}/>
+			  </Switch>
+		  </main>
+	  );
 	};
 };
    
