@@ -10,7 +10,6 @@ export default class DisplayArtists extends React.Component {
 	render() {
 		return (
 			<div>
-				<p>Display artists section</p>
 		    <Switch>
 			    <Route path='/login' component={Login}/>
 			    <Route path='/artists-following' component={ArtistsFollowing}/>
