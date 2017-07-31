@@ -8,5 +8,3 @@ ReactDOM.render((
     <App />
   </BrowserRouter>
 ), document.getElementById('app'));
-
-// const login = require('./login/login');
