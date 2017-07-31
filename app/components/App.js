@@ -7,7 +7,7 @@ import SavedArtists from './SavedArtists';
 
 
 
-export default class Layout extends React.Component {
+export default class App extends React.Component {
 	render() {
 		return (
 			<div className="app-container">
