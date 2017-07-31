@@ -1,3 +1,16 @@
+import React from 'react';
+
+export default class Home extends React.Component {
+	render() {
+		return (
+			<h2>Home</h2>
+		);
+	}
+};
+
+
+
+
 // <div id="artists-following-button">
 // 	<a href="artists-following" className="btn btn-primary">View artists following</a>
 // </div>

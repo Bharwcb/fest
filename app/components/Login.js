@@ -1,4 +1,13 @@
-// putting code in here to just test login first
+import React from 'react';
+
+export default class Login extends React.Component {
+	render() {
+		return (
+			<h3>Login</h3>
+		);
+	}
+};
+
 
 console.log('get to Login component?');
 // require('dotenv').config();

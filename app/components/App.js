@@ -6,7 +6,7 @@ export default class App extends React.Component {
 		return (
 			<div className="app-container">
 				<header>
-					<h1>Home</h1>
+					<p>Header</p>
 				</header>
 
 				<Main />
