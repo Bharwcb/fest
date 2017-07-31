@@ -6,8 +6,6 @@ import Login from './Login';
 import ArtistsFollowing from './ArtistsFollowing';
 import SavedArtists from './SavedArtists';
 
-
-
 export default class DisplayArtists extends React.Component {
 	render() {
 		return (
