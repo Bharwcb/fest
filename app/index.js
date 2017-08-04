@@ -85,13 +85,11 @@ app
 .get('/artists-following', (req, res) => {
 	let artistsFollowing = [];
 	artistsFollowingCallSync();
-
 	/* 
-	* first call - no 'after' option
+	* first call - no 'after' option to make null
 	* response's 'cursor' value is {after: last_artist_id}
 	* spotifyApi.getFollowedArtists({ limit : 3, cursor }) = spotifyApi.getFollowedArtists({ limit : 3, after: 'asdgsadg' })
 	*/
-
 	function artistsFollowingCallSync(cursors=null) {
 		spotifyApi.getFollowedArtists( object.merge({ limit : 3 }, cursors) )
 	  .then((data) => {
@@ -101,6 +99,9 @@ app
 				return artistsFollowingCallSync(cursors);
 			};
 		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
+		  // DISPLAY ARTISTS IN VIEW
+
+
 	  }, (err) => {
 	    console.log('Error in artists following call: ', err);
 	  });
@@ -111,42 +112,41 @@ app
 			artistsFollowing.push(artist.name);
 		});
 	};
+
 })
 
 .get('/saved-artists', (req, res) => {
 	let savedArtists = [];
 	let savedArtistsPromises = [];
 	let offset = 0;
-
 	savedArtistsCallAsync();
 
 	function savedArtistsCallAsync(offset=0) {
-
 		return spotifyApi.getMySavedTracks( object.merge({ limit: 50 }, { offset: offset }) )
 		.then((data) => {
 			buildSavedArtists(data);
-
 		  while (offset < data.body.total) {
 		  	promise = spotifyApi.getMySavedTracks( object.merge({ limit : 50 }, { offset: offset }) )
 		  	.then((data) => {
-		  		buildSavedArtists(data)
+		  		buildSavedArtists(data);
 		  	}, (err) => {
 		  		console.log('Error in additional saved artists calls: ', err);
 		  	})
 		  	savedArtistsPromises.push(promise);
 				offset += 50;
 		  };
-
 		  return Promise.all(savedArtistsPromises)
 		  .then(() => {
 		  	savedArtists = array.uniq(savedArtists);
 			  console.log('\nSaved Artists Array Length: ', savedArtists.length);
+			  // DISPLAY ARTISTS IN VIEW:
+
+
+			  
 		  })
-		  
 		}, (err) => {
 		  console.log('Error in saved artists call: ', err);
 		});
-
 	};
 
 	function buildSavedArtists(data) {
