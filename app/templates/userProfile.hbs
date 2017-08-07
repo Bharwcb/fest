@@ -1,0 +1,9 @@
+
+const userProfileSource = document.getElementById('user-profile-template').innerHTML;
+
+const userProfileTemplate = Handlebars.templates.userProfile(userProfileSource);
+
+const userProfilePlaceholder = document.getElementById('user-profile');
+
+<!-- Need to google how to precompile without a known context (API response would be known) -->
+userProfilePlaceholder.innerHTML = userProfileTemplate({context});
