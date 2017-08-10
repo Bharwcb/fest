@@ -83,6 +83,8 @@ app
 })
 
 .get('/artists-following', (req, res) => {
+	// const artistsFollowingTemplate = require('./templates/artistsFollowing').template;
+
 	let artistsFollowing = [];
 	artistsFollowingCallSync();
 	/* 
@@ -99,7 +101,14 @@ app
 				return artistsFollowingCallSync(cursors);
 			};
 		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
-		  // DISPLAY ARTISTS IN VIEW
+
+		  // HANDLEBARS - DISPLAY ARTISTS IN VIEW
+		  res.render('/views/index.html', artistsFollowing);
+
+		  
+		  const render = artistsFollowingTemplate(artistsFollowing);
+		  console.log("render should be the HTML, next inject it: ", render);
+
 
 
 	  }, (err) => {
