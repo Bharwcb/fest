@@ -103,11 +103,6 @@ app
 		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
 
 		  // HANDLEBARS - DISPLAY ARTISTS IN VIEW
-		  res.render('/views/index.html', artistsFollowing);
-
-		  
-		  const render = artistsFollowingTemplate(artistsFollowing);
-		  console.log("render should be the HTML, next inject it: ", render);
 
 
 
