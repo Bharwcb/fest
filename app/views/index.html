@@ -28,21 +28,33 @@
 		</div>
 	</div>
 
-	<!-- THIS IS NEW -->
-	<script type="text/javascript">
-		$("#artists-following-button").on("click", () => {
+	<script id="artists-following-template" type="text/x-handlebars-template">
+		<h2>Artists following</h2>
+		<!-- #each means template will receive array -->
+		<ul>
+			{{#each this}}
+				<li>{{this}}</li>
+			{{/each}}
+		</ul>
+	</script>
 
-			// DISPLAY ARTISTS FOLLOWING USING HANDLEBARS
+	<script>
+		$("#artists-following-button").on("click", () => {
+			/* 
+			- Make JQuery request to express /artists-following route, which returns list of artists
+			- Then display response from route using Handlebars
+			*/
+
 	  	const artistsFollowingSource = $("#artists-following-template").html();
 	  	const artistsFollowingTemplate = Handlebars.compile(artistsFollowingSource);
-	  	let artistsFollowingPlaceholder = $("#artists-following").html();
+	  	let artistsFollowingPlaceholder = $("#artists-following");
 
-			// MAKE JQUERY REQUEST TO ARTISTS-FOLLOWING
 			$.get('/artists-following').then((res) => {
 				const artistsFollowingFromRoute = res['list'];
 				console.log("response from /artists-following route: ", artistsFollowingFromRoute);
-				// list each artist using Handlebars.  #each means will receive array 
-				artistsFollowingPlaceholder = artistsFollowingTemplate(artistsFollowingFromRoute);
+				artistsFollowingPlaceholder.html(artistsFollowingTemplate(artistsFollowingFromRoute));
+				// artistsFollowingPlaceholder.html('<h1>foo</h1>');
+			
 			});
 
 		})
@@ -71,15 +83,7 @@
 		</div>
 	</script> -->
 
-	<script id="artists-following-template" type="text/x-handlebars-template">
-		<h2>Artists following</h2>
-		<!-- list each artist using Handlebars.  #each means will receive array -->
-		<ul>
-			{{#each this}}
-				<li>{{this}}</li>
-			{{/each}}
-		</ul>
-	</script>
+
 
 <!-- 	<script id="saved-artists-template" type="text/x-handlebars-template">
 		<h2>Saved Artists</h2>
