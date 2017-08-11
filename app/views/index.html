@@ -60,189 +60,20 @@
 	  	let artistsFollowingPlaceholder = $("#artists-following");
 			$.get('/artists-following').then((res) => {
 				const artistsFollowingFromRoute = res['list'];
-				console.log("response from /artists-following route: ", artistsFollowingFromRoute);
 				artistsFollowingPlaceholder.html(artistsFollowingTemplate(artistsFollowingFromRoute));
 			});
 		})
-	</script>
 
-	<script>
 		$("#saved-artists-button").on("click", () => {
 			const savedArtistsSource = $("#saved-artists-template").html();
 			const savedArtistsTemplate = Handlebars.compile(savedArtistsSource);
 			let savedArtistsPlaceholder = $("#saved-artists");
-
 			$.get('/saved-artists').then((res) => {
 				const savedArtistsFromRoute = res['list'];
 				savedArtistsPlaceholder.html(savedArtistsTemplate(savedArtistsFromRoute));
 			})
-
 		});
 	</script>
-
-
-
-<!--  <script id="user-profile-template" type="text/x-handlebars-template">
-		<h1>Logged in as {{display_name}}</h1>
-		<div class="media">
-			<div class="pull-left">
-				<img class="media-object" width="150" src="{{images.0.url}}" />
-			</div>
-		</div>
-		<div class="media-body">
-			<dl class="dl horizontal">
-				<dt>Display name</dt><dd>{{display_name}}</dd>
-				<dt>Id</dt><dd>{{id}}</dd>
-				<dt>Email</dt><dd>{{email}}</dd>
-				<dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
-				<dt>link</dt><dd><a href="{{href}}">{{href}}</a></dd>
-				<dt>Profile image</dt><dd><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
-				<dt>Country</dt><dd>{{country}}</dd>
-			</dl>
-		</div>
-	</script> -->
-
-
-
-<!--   <script>
-
-  	const userProfileSource = document.getElementById('user-profile-template').innerHTML,
-  	userProfileTemplate = Handlebars.compile(userProfileSource),
-  	userProfilePlaceholder = document.getElementById('user-profile');
-
-	
-
-		const oauthSource = document.getElementById("oauth-template").innerHTML,
-		oauthTemplate = Handlebars.compile(oauthSource),
-		oauthPlaceholder = document.getElementById("oauth");
-
-		const params = getUrlParams();
-
-		let access_token = params.access_token,
-		refresh_token = params.refresh_token,
-		err = params.error;
-
-		let promise = null;
-
-		if (err) {
-			alert('Error during authentication: ', err);
-		} else {
-			if (access_token) {
-				render oauth info
-				oauthPlaceholder.innerHTML = oauthTemplate({
-					access_token: access_token,
-					refresh_token: refresh_token
-				});
-
-				~~~ user profile API call
-				$.ajax({
-					url: 'https://api.spotify.com/v1/me',
-					headers: {
-						'Authorization': 'Bearer ' + access_token
-					},
-					success: (res) => {
-						send JSON response from API call into template
-						userProfilePlaceholder.innerHTML = userProfileTemplate(res);
-						$("#login").hide();
-						$("#loggedin").show();
-					}
-				});
-				~~~ end of user profile API call
-
-				~~~ artists following sync API call
-				let artistsFollowing = [];
-				let url = 'https://api.spotify.com/v1/me/following?type=artist&limit=3';
-				artistsFollowingCallSync(url);
-
-				function artistsFollowingCallSync(url) {
-					return $.ajax({
-						url: url,
-						headers: {
-							'Authorization': 'Bearer ' + access_token
-						}
-					})
-					.then((res) => {
-						buildArtistsFollowing(res);
-						if next not null, make api call again with 'next' url
-						if (res.artists.next) {
-							return artistsFollowingCallSync(res.artists.next);
-						};
-						send artistsFollowing array of artist names into template
-						artistsFollowingPlaceholder.innerHTML = artistsFollowingTemplate(artistsFollowing);
-						console.log('artistsFollowing is an array of all artists a user follows: ', artistsFollowing.length);
-					})
-					.fail((err) => {
-						console.log('Error in artists following API call');
-					});
-				};
-
-				function buildArtistsFollowing(res) {
-					res.artists.items.forEach((artist) => {
-						artistsFollowing.push(artist.name);
-					});
-				};
-				~~~ end of artists following call
-
-				~~~ saved artists async API call
-				let offset = 0;
-				let savedArtists = [];
-				let savedArtistsPromises = [];
-
-				savedArtistsCallAsync(url);
-				
-				function savedArtistsCallAsync(url) {
-					return $.ajax({
-						url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
-						headers: {
-							'Authorization': 'Bearer ' + access_token
-						}
-					})
-					.done((res) => {
-						buildSavedArtists(res);
-						while (offset < res.total) {
-							promise = $.ajax({
-								url: 'https://api.spotify.com/v1/me/tracks?limit=50&offset=' + offset,
-								headers: {
-									'Authorization': 'Bearer ' + access_token
-								}
-							})
-							.done((res) => {
-								buildSavedArtists(res)
-							});
-							savedArtistsPromises.push(promise);
-							offset += 50;
-						};
-
-						run all promises
-						$.when.apply($, savedArtistsPromises)
-						only when they are successful
-						.then(() => {
-							savedArtists = _.uniq(savedArtists);
-							savedArtistsPlaceholder.innerHTML = savedArtistsTemplate(savedArtists);
-							console.log('savedArtists is an array of unique artist names in your library: ', savedArtists.length);
-						});
-					})
-					.fail((err) => {
-						console.log('error in saved artists api call');
-					});
-				};
-
-				function buildSavedArtists(res) {
-					res.items.forEach((track) => {
-						track.track.artists.forEach((artist) => {
-							savedArtists.push(artist.name);
-						})
-					});
-				};
-				~~~ end of saved artists call	
-
-			} else {
-				$("#login").show();
-				$("#loggedin").hide();
-			}
-
-		};
-  </script>  -->
 
 </body>
 </html>
