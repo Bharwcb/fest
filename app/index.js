@@ -144,8 +144,10 @@ app
 		  .then(() => {
 		  	savedArtists = array.uniq(savedArtists);
 			  console.log('\nSaved Artists Array Length: ', savedArtists.length);
-			  // DISPLAY ARTISTS IN VIEW:
-
+			  
+  		  res.json({
+			  	'list': savedArtists
+			  });
 
 			  
 		  })
