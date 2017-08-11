@@ -1,4 +1,4 @@
-const Handlebars = require('hbs');
+require('hbs');
 
 const source = "<h2>Artists following</h2>" +
 								"<ul>" +

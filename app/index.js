@@ -83,8 +83,6 @@ app
 })
 
 .get('/artists-following', (req, res) => {
-	// const artistsFollowingTemplate = require('./templates/artistsFollowing').template;
-
 	let artistsFollowing = [];
 	artistsFollowingCallSync();
 	/* 
@@ -102,8 +100,12 @@ app
 			};
 		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
 
-		  // HANDLEBARS - DISPLAY ARTISTS IN VIEW
+		  // return list as JSON
+    //   res.json({
+	   //    'some_key': API_response
+		  // });
 
+		  // then in view, use jquery instead of button, and use template in view: $.get('/route').then(function(res){console.log(res)});
 
 
 	  }, (err) => {
