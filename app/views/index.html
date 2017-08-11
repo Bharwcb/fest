@@ -13,7 +13,7 @@
 			<a href="/login" class="btn btn-primary">Login to Spotify</a>
 		</div>
 		<div id="artists-following-button">
-			<a href="/artists-following" class="btn btn-primary">View artists following</a>
+			<a class="btn btn-primary">View artists following</a>
 		</div>
 		<div id="saved-artists-button">
 			<a href="saved-artists" class="btn btn-primary">View saved artists</a>
@@ -30,9 +30,22 @@
 	<!-- TESTING -->
 	<script type="text/javascript">
 		$("#artists-following-button").on("click", () => {
-			
-			// DISPLAY ARTISTS FOLLOWING USING HANDLEBARS
 
+			// MAKE JQUERY REQUEST TO ARTISTS-FOLLOWING
+			$.get('/artists-following').then((res) => {
+				console.log("what is returned from /artists-following?: ", res);
+			});
+
+			// DISPLAY ARTISTS FOLLOWING USING HANDLEBARS
+	  	const artistsFollowingSource = $("#artists-following-template").html();
+
+
+			// const artistsFollowingTemplate = Handlebars.compile(artistsFollowingSource);
+			// $("#artists-following").html() = artistsFollowingTemplate(RESPONSE);
+
+
+		
+			// console.log('artistsFollowing is an array of all artists a user follows: ', artistsFollowing.length);
 
 		})
 	</script>
@@ -62,7 +75,7 @@
 
 	<script id="artists-following-template" type="text/x-handlebars-template">
 		<h2>Artists following</h2>
-		list each artist using Handlebars.  #each means will receive array
+		<!-- list each artist using Handlebars.  #each means will receive array -->
 		<ul>
 			{{#each this}}
 				<li>{{this}}</li>
