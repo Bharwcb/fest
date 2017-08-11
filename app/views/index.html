@@ -73,9 +73,9 @@
 			let savedArtistsPlaceholder = $("#saved-artists");
 
 			$.get('/saved-artists').then((res) => {
-				console.log("saved artists response: ", res);
+				const savedArtistsFromRoute = res['list'];
+				savedArtistsPlaceholder.html(savedArtistsTemplate(savedArtistsFromRoute));
 			})
-
 
 		});
 	</script>
