@@ -106,7 +106,8 @@ app
 		  // });
 
 		  // then in view, use jquery instead of button, and use template in view: $.get('/route').then(function(res){console.log(res)});
-
+ 
+ 
 
 	  }, (err) => {
 	    console.log('Error in artists following call: ', err);
