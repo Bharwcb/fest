@@ -99,8 +99,13 @@ app
 				return artistsFollowingCallSync(cursors);
 			};
 		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
-		  // DISPLAY ARTISTS IN VIEW
 
+		  // return list as JSON
+		  res.json({
+		  	'list': artistsFollowing
+		  });
+
+		  // then in view, use jquery instead of button, to call on /artists-following route.  Use reponse from route and use Handlebars in browser not server.
 
 	  }, (err) => {
 	    console.log('Error in artists following call: ', err);

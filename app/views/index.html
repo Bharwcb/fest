@@ -3,6 +3,8 @@
 <head>
 	<title>Auth set up</title>
 	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 </head>
 
 <body>
@@ -11,7 +13,8 @@
 			<a href="/login" class="btn btn-primary">Login to Spotify</a>
 		</div>
 		<div id="artists-following-button">
-			<a href="/artists-following" class="btn btn-primary">View artists following</a>
+			<!-- REMOVED THE A HREF!!!!!!!!!!! -->
+			<a class="btn btn-primary">View artists following</a>
 		</div>
 		<div id="saved-artists-button">
 			<a href="saved-artists" class="btn btn-primary">View saved artists</a>
@@ -25,7 +28,42 @@
 		</div>
 	</div>
 
-	<script id="user-profile-template" type="text/x-handlebars-template">
+	<script id="artists-following-template" type="text/x-handlebars-template">
+		<h2>Artists following</h2>
+		<!-- #each means template will receive array -->
+		<ul>
+			{{#each this}}
+				<li>{{this}}</li>
+			{{/each}}
+		</ul>
+	</script>
+
+	<script>
+		$("#artists-following-button").on("click", () => {
+			/* 
+			- Make JQuery request to express /artists-following route, which returns list of artists
+			- Then display response from route using Handlebars
+			*/
+
+	  	const artistsFollowingSource = $("#artists-following-template").html();
+	  	const artistsFollowingTemplate = Handlebars.compile(artistsFollowingSource);
+	  	let artistsFollowingPlaceholder = $("#artists-following");
+
+			$.get('/artists-following').then((res) => {
+				const artistsFollowingFromRoute = res['list'];
+				console.log("response from /artists-following route: ", artistsFollowingFromRoute);
+				artistsFollowingPlaceholder.html(artistsFollowingTemplate(artistsFollowingFromRoute));
+				// artistsFollowingPlaceholder.html('<h1>foo</h1>');
+			
+			});
+
+		})
+	</script>
+
+
+
+
+<!--  <script id="user-profile-template" type="text/x-handlebars-template">
 		<h1>Logged in as {{display_name}}</h1>
 		<div class="media">
 			<div class="pull-left">
@@ -43,42 +81,33 @@
 				<dt>Country</dt><dd>{{country}}</dd>
 			</dl>
 		</div>
-	</script>
+	</script> -->
 
-	<script id="artists-following-template" type="text/x-handlebars-template">
-		<h2>Artists following</h2>
-		<!-- list each artist using Handlebars.  #each means will receive array -->
-		<ul>
-			{{#each this}}
-				<li>{{this}}</li>
-			{{/each}}
-		</ul>
-	</script>
 
-	<script id="saved-artists-template" type="text/x-handlebars-template">
+
+<!-- 	<script id="saved-artists-template" type="text/x-handlebars-template">
 		<h2>Saved Artists</h2>
 		<ul>
-			<!-- Iterate through all saved artists. this = list of items -->
+			Iterate through all saved artists. this = list of items
 			{{#each this}}
 				<li>{{this}}</li>
 			{{/each}}
 		</ul>
-	</script>
+	</script> -->
 
-	<script id="oauth-template" type="text/x-handlebars-template">
+<!-- 	<script id="oauth-template" type="text/x-handlebars-template">
 		<h2>Oauth info</h2>
 		<dl class="dl-horizontal">
 			<dt>Access token</dt><dd>{{access_token}}</dd>
 			<dt>Refresh token</dt><dd>{refresh_token}}</dd>
 		</dl>
-	</script>
+	</script> -->
 
-	<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
-  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
 
-  <script>
-  	// gets params from url after authorization
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script> -->
+
+<!--   <script>
+  	gets params from url after authorization
   	function getUrlParams() {
   		const urlParams = {};
   		var e, r = /([^&;=]+)=?([^&;]*)/g;
@@ -117,28 +146,28 @@
 			alert('Error during authentication: ', err);
 		} else {
 			if (access_token) {
-				// render oauth info
+				render oauth info
 				oauthPlaceholder.innerHTML = oauthTemplate({
 					access_token: access_token,
 					refresh_token: refresh_token
 				});
 
-				// ~~~ user profile API call
+				~~~ user profile API call
 				$.ajax({
 					url: 'https://api.spotify.com/v1/me',
 					headers: {
 						'Authorization': 'Bearer ' + access_token
 					},
 					success: (res) => {
-						// send JSON response from API call into template
+						send JSON response from API call into template
 						userProfilePlaceholder.innerHTML = userProfileTemplate(res);
 						$("#login").hide();
 						$("#loggedin").show();
 					}
 				});
-				// ~~~ end of user profile API call
+				~~~ end of user profile API call
 
-				// ~~~ artists following sync API call
+				~~~ artists following sync API call
 				let artistsFollowing = [];
 				let url = 'https://api.spotify.com/v1/me/following?type=artist&limit=3';
 				artistsFollowingCallSync(url);
@@ -152,11 +181,11 @@
 					})
 					.then((res) => {
 						buildArtistsFollowing(res);
-						// if next not null, make api call again with 'next' url
+						if next not null, make api call again with 'next' url
 						if (res.artists.next) {
 							return artistsFollowingCallSync(res.artists.next);
 						};
-						// send artistsFollowing array of artist names into template
+						send artistsFollowing array of artist names into template
 						artistsFollowingPlaceholder.innerHTML = artistsFollowingTemplate(artistsFollowing);
 						console.log('artistsFollowing is an array of all artists a user follows: ', artistsFollowing.length);
 					})
@@ -170,9 +199,9 @@
 						artistsFollowing.push(artist.name);
 					});
 				};
-				// ~~~ end of artists following call
+				~~~ end of artists following call
 
-				// ~~~ saved artists async API call
+				~~~ saved artists async API call
 				let offset = 0;
 				let savedArtists = [];
 				let savedArtistsPromises = [];
@@ -202,9 +231,9 @@
 							offset += 50;
 						};
 
-						// run all promises
+						run all promises
 						$.when.apply($, savedArtistsPromises)
-						// only when they are successful
+						only when they are successful
 						.then(() => {
 							savedArtists = _.uniq(savedArtists);
 							savedArtistsPlaceholder.innerHTML = savedArtistsTemplate(savedArtists);
@@ -223,7 +252,7 @@
 						})
 					});
 				};
-				// ~~~ end of saved artists call	
+				~~~ end of saved artists call	
 
 			} else {
 				$("#login").show();
@@ -231,7 +260,8 @@
 			}
 
 		};
-  </script>
+  </script>  -->
+
 </body>
 </html>
 
