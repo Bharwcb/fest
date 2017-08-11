@@ -101,13 +101,11 @@ app
 		  console.log('\nArtists Following Array Length: ', artistsFollowing.length);
 
 		  // return list as JSON
-    //   res.json({
-	   //    'some_key': API_response
-		  // });
+		  // res.send(artistsFollowing);
 
 		  // then in view, use jquery instead of button, and use template in view: $.get('/route').then(function(res){console.log(res)});
  
- 
+
 
 	  }, (err) => {
 	    console.log('Error in artists following call: ', err);
