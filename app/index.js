@@ -105,10 +105,7 @@ app
 		  	'list': artistsFollowing
 		  });
 
-		  // or return artistsFollowing?
-
-		  // then in view, use jquery instead of button, and use template in view: $.get('/route').then(function(res){console.log(res)});
-
+		  // then in view, use jquery instead of button, to call on /artists-following route.  Use reponse from route and use Handlebars in browser not server.
 
 	  }, (err) => {
 	    console.log('Error in artists following call: ', err);

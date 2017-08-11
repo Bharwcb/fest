@@ -13,6 +13,7 @@
 			<a href="/login" class="btn btn-primary">Login to Spotify</a>
 		</div>
 		<div id="artists-following-button">
+			<!-- REMOVED THE A HREF!!!!!!!!!!! -->
 			<a class="btn btn-primary">View artists following</a>
 		</div>
 		<div id="saved-artists-button">
@@ -31,17 +32,18 @@
 	<script type="text/javascript">
 		$("#artists-following-button").on("click", () => {
 
-			// MAKE JQUERY REQUEST TO ARTISTS-FOLLOWING
-			$.get('/artists-following').then((res) => {
-				console.log("what is returned from /artists-following?: ", res);
-			});
-
 			// DISPLAY ARTISTS FOLLOWING USING HANDLEBARS
 	  	const artistsFollowingSource = $("#artists-following-template").html();
+	  	const artistsFollowingTemplate = Handlebars.compile(artistsFollowingSource);
+	  	let artistsFollowingPlaceholder = $("#artists-following").html();
 
-
-			// const artistsFollowingTemplate = Handlebars.compile(artistsFollowingSource);
-			// $("#artists-following").html() = artistsFollowingTemplate(RESPONSE);
+			// MAKE JQUERY REQUEST TO ARTISTS-FOLLOWING
+			$.get('/artists-following').then((res) => {
+				const artistsFollowingFromRoute = res['list'];
+				console.log("response from /artists-following route: ", artistsFollowingFromRoute);
+				// list each artist using Handlebars.  #each means will receive array 
+				artistsFollowingPlaceholder = artistsFollowingTemplate(artistsFollowingFromRoute);
+			});
 
 
 		
